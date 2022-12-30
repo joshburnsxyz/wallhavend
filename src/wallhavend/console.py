@@ -1,8 +1,7 @@
 import argparse
 import requests
 
-from .wallhaven_api import make_payload, search_url_generator
-from .fileio import save_bin_data
+from .wallhaven_api import make_payload, search_url_generator, process_image
 
 # Create parser 
 parser = argparse.ArgumentParser(
@@ -46,11 +45,7 @@ def run():
     
     # Loop over paged results and save images
     for img in resp["data"]:
-      img_type = img["file_type"].split("/")[1]
-      img_name = img["id"]
-      img_file = f"./out/{img_name}.{img_type}"
-      img_content = requests.get(img["path"], stream=True).content
-      save_bin_data(img_file,img_content)
-
+      process_image(img)
+      
     # Increment page number for next cycle
     results_page = results_page + 1
