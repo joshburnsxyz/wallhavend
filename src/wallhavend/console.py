@@ -51,6 +51,8 @@ def run():
     loop_payload["page"] = results_page
     resp = requests.get(base_url, params=loop_payload).json()
     for img in resp["data"]:
-      img_url = img["path"]
-      print(requests.get(img_url))
+      img_bin_data = requests.get(img["path"]).text
+      img_file = open(f"./{img["id"]}", "w+")
+      img_file.write(img_bin_data)
+      img_file.close()
     results_page = results_page + 1
