@@ -2,6 +2,7 @@ import argparse
 import requests
 
 from .wallhaven_api import make_payload, search_url_generator
+from .fileio import save_bin_data
 
 # Create parser 
 parser = argparse.ArgumentParser(
@@ -50,10 +51,7 @@ def run():
       img_name = img["id"]
       img_file = f"./out/{img_name}.{img_type}"
       img_content = requests.get(img["path"], stream=True).content
+      save_bin_data(img_file,img_content)
       
-      # Open target image and write bytestream to it.
-      with open(img_file, "wb") as binary_img_file:
-        binary_img_file.write(img_content)
-
     # Increment page number for next cycle
     results_page = results_page + 1
