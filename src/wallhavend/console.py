@@ -33,3 +33,6 @@ def run():
 
   wallhaven_search_request = requests.get(base_url, params=payload)
   data = wallhaven_search_request.json()
+
+  for img in data["data"]:
+    print(img["path"])
