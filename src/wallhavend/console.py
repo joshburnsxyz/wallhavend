@@ -1,7 +1,7 @@
 import argparse
 import requests
 
-from .wallhaven_api import make_payload
+from .wallhaven_api import make_payload, search_url_generator
 
 # Create parser 
 parser = argparse.ArgumentParser(
@@ -17,24 +17,20 @@ parser.add_argument('-p', '--pages', metavar="LIMIT", help="Set a limit on how m
 
 def run():
   args = parser.parse_args()
-  base_url = "https://wallhaven.cc/api/v1/search"
+  page_limit = args.pages
+  s_url = search_url_generator(apikey=args.key)
+  results_page = 1
   nsfw_flag = "100"
-
-  # Append API Key to request URL if available
-  if args.key is not None:
-    base_url += f"?apikey={args.key}"
-
+  
   # NSFW filter
   if args.nsfw is True:
     nsfw_flag = "111"
 
   # Generate payload for request
-  results_page = 1
-  page_limit = args.pages
   initial_payload = make_payload(args.query,nsfw_flag,results_page)
 
   # Get metadata
-  wallhaven_metadata_request = requests.get(base_url, params=initial_payload)
+  wallhaven_metadata_request = requests.get(s_url, params=initial_payload)
   metadata = wallhaven_metadata_request.json()["meta"]
  
   # If page_limit doesnt get an upfront value
@@ -46,7 +42,7 @@ def run():
   while results_page < page_limit:
     # Generate query for next page of results
     loop_payload = make_payload(args.query,nsfw_flag,results_page)
-    resp = requests.get(base_url, params=loop_payload).json()
+    resp = requests.get(s_url, params=loop_payload).json()
     
     # Loop over paged results and save images
     for img in resp["data"]:
