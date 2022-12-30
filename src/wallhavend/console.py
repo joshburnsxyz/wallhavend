@@ -16,6 +16,10 @@ parser.add_argument('-N', '--nsfw', action="store_true", help="Allow NSFW images
 parser.add_argument('-p', '--pages', metavar="LIMIT", help="Set a limit on how many pages the API can return (24 images per page)")
 
 def run():
+  """
+  Primary console entrypoint. This function is run when `wallhavend`
+  is called from the commandline.
+  """
   args = parser.parse_args()
   page_limit = args.pages
   s_url = search_url_generator(apikey=args.key)
@@ -46,6 +50,6 @@ def run():
     # Loop over paged results and save images
     for img in resp["data"]:
       process_image(img)
-      
+
     # Increment page number for next cycle
     results_page = results_page + 1
