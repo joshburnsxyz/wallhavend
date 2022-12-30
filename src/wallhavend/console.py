@@ -1,6 +1,8 @@
 import argparse
 import requests
 
+from .wallhaven_api import make_payload
+
 # Create parser 
 parser = argparse.ArgumentParser(
                     prog = 'wallhavend',
@@ -29,13 +31,7 @@ def run():
   # Generate payload for request
   results_page = 1
   page_limit = args.pages
-  initial_payload = {
-    "q": args.query,
-    "purity": nsfw_flag,
-    "sorting": "date_added",
-    "categories": "111",
-    "page": results_page
-  }
+  initial_payload = make_payload(args.query,nsfw_flag,results_page)
 
   # Get metadata
   wallhaven_metadata_request = requests.get(base_url, params=initial_payload)
@@ -49,8 +45,7 @@ def run():
   # Only loop until page_limit is reached
   while results_page < page_limit:
     # Generate query for next page of results
-    loop_payload = initial_payload
-    loop_payload["page"] = results_page
+    loop_payload = make_payload(args.query,nsfw_flag,results_page)
     resp = requests.get(base_url, params=loop_payload).json()
     
     # Loop over paged results and save images
