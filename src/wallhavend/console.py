@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('-k', '--key', metavar="KEY", help="Your wallhaven.cc API key")
 parser.add_argument('-q', '--query', metavar="QUERY", help="Search term, or tag")
 parser.add_argument('-N', '--nsfw', action="store_true", help="Allow NSFW images to be returned in results")
+parser.add_argument('-p', '--pages', metavar="LIMIT", help="Set a limit on how many pages the API can return (24 images per page)")
 
 def run():
   args = parser.parse_args()
@@ -26,13 +27,30 @@ def run():
     nsfw_flag = "111"
 
   # Generate payload for request
-  payload = {
+  results_page = 1
+  page_limit = args.pages
+  initial_payload = {
     "q": args.query,
-    "purity": nsfw_flag
+    "purity": nsfw_flag,
+    "sorting": "date_added",
+    "categories": "111",
+    "page": results_page
   }
 
-  wallhaven_search_request = requests.get(base_url, params=payload)
-  data = wallhaven_search_request.json()
+  # Get metadata
+  wallhaven_metadata_request = requests.get(base_url, params=initial_payload)
+  metadata = wallhaven_metadata_request.json()["meta"]
+ 
+  # If page_limit doesnt get an upfront value
+  # set it to the number of pages of results
+  if page_limit is None:
+    page_limit = metadata["last_page"]
 
-  for img in data["data"]:
-    print(img["path"])
+  while results_page < page_limit:
+    loop_payload = initial_payload
+    loop_payload["page"] = results_page
+    resp = requests.get(base_url, params=loop_payload).json()
+    for img in resp["data"]:
+      img_url = img["path"]
+      print(requests.get(img_url))
+    results_page = results_page + 1
