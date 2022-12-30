@@ -31,8 +31,7 @@ def run():
   initial_payload = make_payload(args.query,nsfw_flag,results_page)
 
   # Get metadata
-  wallhaven_metadata_request = requests.get(s_url, params=initial_payload)
-  metadata = wallhaven_metadata_request.json()["meta"]
+  metadata = requests.get(s_url, params=initial_payload).json()["meta"]
  
   # If page_limit doesnt get an upfront value
   # set it to the number of pages of results
@@ -52,6 +51,6 @@ def run():
       img_file = f"./out/{img_name}.{img_type}"
       img_content = requests.get(img["path"], stream=True).content
       save_bin_data(img_file,img_content)
-      
+
     # Increment page number for next cycle
     results_page = results_page + 1
