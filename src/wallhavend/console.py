@@ -30,14 +30,9 @@ def run():
   if args.nsfw is True:
     nsfw_flag = "111"
 
-  # Generate payload for request
+  # Get metadata and set page_limit based on page count.
   initial_payload = make_payload(args.query,nsfw_flag,results_page)
-
-  # Get metadata
   metadata = requests.get(s_url, params=initial_payload).json()["meta"]
- 
-  # If page_limit doesnt get an upfront value
-  # set it to the number of pages of results
   if page_limit is None:
     page_limit = metadata["last_page"]
 
