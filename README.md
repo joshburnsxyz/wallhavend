@@ -19,3 +19,7 @@ __Flags__
 
 - `--nsfw` or `-N` - Enable NSFW images in results.
 - `--help` or `-h` - Display help message.
+
+## Installation
+
+__FIXME__
