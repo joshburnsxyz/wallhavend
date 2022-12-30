@@ -46,18 +46,23 @@ def run():
   if page_limit is None:
     page_limit = metadata["last_page"]
 
+  # Only loop until page_limit is reached
   while results_page < page_limit:
+    # Generate query for next page of results
     loop_payload = initial_payload
     loop_payload["page"] = results_page
     resp = requests.get(base_url, params=loop_payload).json()
+    
+    # Loop over paged results and save images
     for img in resp["data"]:
       img_type = img["file_type"].split("/")[1]
       img_name = img["id"]
       img_file = f"./out/{img_name}.{img_type}"
       img_content = requests.get(img["path"], stream=True).content
       
+      # Open target image and write bytestream to it.
       with open(img_file, "wb") as binary_img_file:
         binary_img_file.write(img_content)
 
-      quit()
+    # Increment page number for next cycle
     results_page = results_page + 1
