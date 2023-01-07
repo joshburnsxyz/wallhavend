@@ -1,5 +1,6 @@
 import argparse
 import requests
+from rich.progress import track
 
 from .wallhaven_api import make_payload, search_url_generator, process_image
 
@@ -43,7 +44,7 @@ def run():
     resp = requests.get(s_url, params=loop_payload).json()
     
     # Loop over paged results and save images
-    for img in resp["data"]:
+    for img in track(resp["data"], description='[green]Processing wallpaper'):
       process_image(img)
 
     # Increment page number for next cycle
