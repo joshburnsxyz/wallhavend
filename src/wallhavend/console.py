@@ -1,7 +1,9 @@
 import argparse
 import requests
-from rich.progress import track
+import os
 
+from rich.progress import track
+from .fileio import dir_exists
 from .wallhaven_api import make_payload, search_url_generator, process_image
 
 # Create parser 
@@ -26,6 +28,11 @@ def run():
   s_url = search_url_generator(apikey=args.key)
   results_page = 1
   nsfw_flag = "100"
+
+  # Check if output directory exists or not
+  if not dir_exists("./out"):
+    os.mkdir("./out")
+  
   
   # NSFW filter
   if args.nsfw is True:
