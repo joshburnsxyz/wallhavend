@@ -33,7 +33,6 @@ def run():
   if not dir_exists("./out"):
     os.mkdir("./out")
   
-  
   # NSFW filter
   if args.nsfw is True:
     nsfw_flag = "111"
