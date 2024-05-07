@@ -44,7 +44,7 @@ def run():
     page_limit = metadata["last_page"]
 
   # Only loop until page_limit is reached
-  while results_page < page_limit:
+  while results_page < int(page_limit):
     # Generate query for next page of results
     loop_payload = make_payload(args.query,nsfw_flag,results_page)
     resp = requests.get(s_url, params=loop_payload).json()
