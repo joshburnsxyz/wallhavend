@@ -22,4 +22,16 @@ __Flags__
 
 ## Installation
 
-__FIXME__
+1. Download source
+2. Use `poetry` to build the wheel package
+   ```shell
+   $ poetry build
+   ```
+3. Install wheel with pip
+   ```shell
+   $ pip install ./path/to/package.whl
+   ```
+4. Run `wallhavend` command
+   ```shell
+   $ wallhavend
+   ```
